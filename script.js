@@ -7,6 +7,8 @@ const user = {},
       connectionInterval = 5000,
       reloadInterval = 3000;
 
+let lastMessageSaved;
+
 
 
 function login() {
@@ -25,6 +27,8 @@ function login() {
 function checkConnection() {
     setInterval(() => {
         const promise = axios.post(STATUS_URL, user);
+        lastMessageSaved = document.querySelector("ul").lastChild.children[0].value;
+        console.log(lastMessageSaved);
         promise.catch(handleError);
     }, connectionInterval);
 }
@@ -81,7 +85,7 @@ function reloadMessages() {
 
 function scrollMessages() {
     const lastMessage = document.querySelector("ul").lastElementChild;
-    lastMessage.scrollIntoView();
+        lastMessage.scrollIntoView();
 }
 
 function cleanMessages() {
