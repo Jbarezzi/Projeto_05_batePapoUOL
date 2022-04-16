@@ -17,6 +17,7 @@
     ul {
         margin-top: 106px;
         margin-bottom: 85px;
+        height: calc(100% - 160px);
     }
 
     li {

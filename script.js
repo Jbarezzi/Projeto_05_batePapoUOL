@@ -38,6 +38,7 @@ function checkConnection() {
 function getMessages() {
     const promise = axios.get(MESSAGES_URL);
     promise.then((response) => {
+        cleanMessages();
         response.data.map((message) => {
             if(message.to === "Todos" || message.to === user.name) {
                 displayMessages(message);
@@ -75,12 +76,22 @@ function displayPrivateMessages(message) {
     document.querySelector("ul").innerHTML += `<li class="private-messages"><p><span class="time">${message.time}</span>  <span class="strong">${message.from}</span> reservadamente para <span class="strong">${message.to}</span>:  ${message.text}</p></li>`;
 }
 
+function reloadMessages() {
+    setInterval(getMessages, reloadInterval);
+}
+
 function scrollMessages() {
     const lastMessage = document.querySelector("ul").lastElementChild;
     lastMessage.scrollIntoView();
+}
+
+function cleanMessages() {
+    const messageList = document.querySelector("ul");
+    messageList.innerHTML = "";
 }
 
 
 
 login();
 getMessages();
+reloadMessages();
