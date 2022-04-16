@@ -11,11 +11,33 @@
     header {
         padding: 0 25px 0 22px;
         top: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.05);
+    }
+
+    ul {
+        margin-top: 106px;
+        margin-bottom: 85px;
+    }
+
+    li {
+        width: 100%;
+        min-height: 40px;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        border-radius: 2px;
+    }
+
+    p {
+        font-size: 14px;
+        font-family: "Roboto", sans-serif;
+        padding: 10px 8px;
     }
 
     footer {
         bottom: 0;
         padding: 0 27px 0 20px;
+        box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.05);
     }
 
     header ion-icon {
@@ -55,18 +77,6 @@
         left: 0;
     }
 
-    .message-box {
-        margin-top: 106px;
-    }
-
-    .messages {
-        width: 100%;
-        min-height: 40px;
-        margin-bottom: 4px;
-        display: flex;
-        align-items: center;
-    }
-
     .status-messages {
         background-color: #DCDCDC;
     }
@@ -77,6 +87,14 @@
 
     .private-messages {
         background-color: #FFDEDE;
+    }
+
+    .strong {
+        font-weight: 700;
+    }
+
+    .time {
+        color: #AAAAAA;
     }
 
 }

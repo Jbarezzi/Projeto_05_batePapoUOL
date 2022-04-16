@@ -32,19 +32,55 @@ function loginError() {
 function checkConnection() {
     setInterval(() => {
         axios.post(STATUS_URL, user);
-    }, connectionInterval)
+    }, connectionInterval);
 }
 
 function getMessages() {
     const promise = axios.get(MESSAGES_URL);
-    promise.then(displayMessages);
-    promise.catch(() => alert("deu ruim"));
+    promise.then((response) => {
+        response.data.map((message) => {
+            if(message.to === "Todos" || message.to === user.name) {
+                displayMessages(message);
+            }
+        });
+    });
+    promise.catch(() => console.log("Status code:" + error.response.status));
 }
 
-function displayMessages() {
+function displayMessages(messages) {
     switch(messages.type) {
-
+        case "status":
+            displayStatusMessages(messages);
+            break;
+        case "message":
+            displayNormalMessages(messages);
+            break;
+        case "private_message":
+            displayPrivateMessages(messages);
+            break;
+        default:
+            break;
     }
 }
 
+function displayStatusMessages(message) {
+    document.querySelector("ul").innerHTML += `<li class="status-messages"><p><span class="time">${message.time}</span> <span class="strong">${message.from}</span> entra na sala...</p></li>`;
+}
+
+function displayNormalMessages(message) {
+    document.querySelector("ul").innerHTML += `<li class="normal-messages"><p><span class="time">${message.time}</span>  <span class="strong">${message.from}</span> para <span class="strong">${message.to}</span>:  ${message.text}</p></li>`;
+}
+
+function displayPrivateMessages(message) {
+    document.querySelector("ul").innerHTML += `<li class="private-messages"><p><span class="time">${message.time}</span>  <span class="strong">${message.from}</span> reservadamente para <span class="strong">${message.to}</span>:  ${message.text}</p></li>`;
+}
+
+function scrollMessages() {
+    const lastMessage = document.querySelector("ul").lastElementChild;
+    lastMessage.scrollIntoView();
+}
+
+
+
 login();
+getMessages();
