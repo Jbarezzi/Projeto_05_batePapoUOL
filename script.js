@@ -14,25 +14,24 @@ function login() {
     user.name = username;
     const promise = axios.post(PARTICIPANTS_URL, user);
     promise.then(() => {
-        console.log("Tudo certo");
         checkConnection();
     });
-    promise.catch(loginError);
-}
-
-function loginSuccess() {
-    console.log("Tudo certo!");
-}
-
-function loginError() {
-    alert("O nome já está sendo usado ou é inválido, tente novamente.");
-    login();
+    promise.catch(() => {
+        alert("O nome já está sendo usado ou é inválido, tente novamente.");
+        login();
+    });
 }
 
 function checkConnection() {
     setInterval(() => {
-        axios.post(STATUS_URL, user);
+        const promise = axios.post(STATUS_URL, user);
+        promise.catch(handleError);
     }, connectionInterval);
+}
+
+function handleError(error) {
+    console.log("Status code: " + error.response.status);
+    console.log("Mensagem de Erro: " + error.response.data);
 }
 
 function getMessages() {
@@ -45,7 +44,7 @@ function getMessages() {
             }
         });
     });
-    promise.catch(() => console.log("Status code:" + error.response.status));
+    promise.catch(handleError);
 }
 
 function displayMessages(messages) {
@@ -65,15 +64,15 @@ function displayMessages(messages) {
 }
 
 function displayStatusMessages(message) {
-    document.querySelector("ul").innerHTML += `<li class="status-messages"><p><span class="time">${message.time}</span> <span class="strong">${message.from}</span> entra na sala...</p></li>`;
+    document.querySelector("ul").innerHTML += `<li class="status-messages"><p><span class="time">${message.time}</span> <strong>${message.from}</strong> entra na sala...</p></li>`;
 }
 
 function displayNormalMessages(message) {
-    document.querySelector("ul").innerHTML += `<li class="normal-messages"><p><span class="time">${message.time}</span>  <span class="strong">${message.from}</span> para <span class="strong">${message.to}</span>:  ${message.text}</p></li>`;
+    document.querySelector("ul").innerHTML += `<li class="normal-messages"><p><span class="time">${message.time}</span>  <strong>${message.from}</strong> para <strong>${message.to}</strong>:  ${message.text}</p></li>`;
 }
 
 function displayPrivateMessages(message) {
-    document.querySelector("ul").innerHTML += `<li class="private-messages"><p><span class="time">${message.time}</span>  <span class="strong">${message.from}</span> reservadamente para <span class="strong">${message.to}</span>:  ${message.text}</p></li>`;
+    document.querySelector("ul").innerHTML += `<li class="private-messages"><p><span class="time">${message.time}</span>  <strong>${message.from}</strong> reservadamente para <strong>${message.to}</strong>:  ${message.text}</p></li>`;
 }
 
 function reloadMessages() {
@@ -90,7 +89,16 @@ function cleanMessages() {
     messageList.innerHTML = "";
 }
 
-
+function sendMessage(message) {
+    const sendedMessage = {from: user.name, to: "Todos", text: message.children[0].value, type: "message"};
+    const promise = axios.post(MESSAGES_URL, sendedMessage);
+    message.children[0].value = "";
+    promise.then(getMessages);
+    promise.catch(() => {
+        alert("Houve algum problema de conexão, clique em OK para entrar de novo na sala.");
+        window.location.reload();
+    })
+}
 
 login();
 getMessages();
